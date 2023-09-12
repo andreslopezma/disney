@@ -1,12 +1,15 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import CameraIndoorIcon from '@mui/icons-material/CameraIndoor';
 import { LocalMoviesOutlined, PersonPin } from '@mui/icons-material';
 import DrawIcon from '@mui/icons-material/Draw';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
-import { Button, Chip, Divider, FormControl, Grid, InputAdornment, InputLabel, MenuItem, Rating, Select, Stack, TextField, Typography } from '@mui/material';
+import { Button, Chip, Divider, Grid, Rating, Stack, TextField, Typography } from '@mui/material';
 import Title from './Title';
+import useCreate from '../hooks/useCreate';
 
 function FormularioPeliculas() {
+    const [formMovies, setFormMovies] = useState({});
+    const { sendData } = useCreate('movies');
     const titles = [{
         text: 'Home',
         icon: <CameraIndoorIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
@@ -14,7 +17,7 @@ function FormularioPeliculas() {
     }, {
         text: 'Peliculas',
         icon: <LocalMoviesOutlined sx={{ mr: 0.5 }} fontSize="inherit" />,
-        path: null
+        path: '/peliculas/series'
     }, {
         text: 'Formulario',
         icon: <DrawIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
@@ -32,6 +35,14 @@ function FormularioPeliculas() {
         console.log("Archivo seleccionado:", file.name);
         // Aquí puedes manejar el archivo cargado según lo que necesites hacer
     };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormMovies({
+            ...formMovies,
+            [name]: value
+        });
+    };
     return (
         <>
             <Title titles={titles} />
@@ -46,6 +57,7 @@ function FormularioPeliculas() {
                         name="name"
                         id="name"
                         placeholder="(ej. Luca, Toy Story)"
+                        onChange={handleInputChange}
                     />
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -56,16 +68,16 @@ function FormularioPeliculas() {
                         id="date_publication"
                         placeholder="(ej. 35)"
                         type="date"
+                        onChange={handleInputChange}
                     />
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <Typography component="legend">Calificacion</Typography>
                     <Rating
-                        name="simple-controlled"
+                        name="qualification"
+                        id="qualification"
                         value={0}
-                        onChange={(event, newValue) => {
-                            setValue(newValue);
-                        }}
+                        onChange={handleInputChange}
                     />
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -81,7 +93,11 @@ function FormularioPeliculas() {
                 </Grid>
                 <Grid item container justifyContent="center" alignItems="center">
                     <Stack>
-                        <Button variant="outlined" startIcon={<SaveAsIcon />}>
+                        <Button
+                            variant="outlined"
+                            tartIcon={<SaveAsIcon />}
+                            onClick={() => sendData(formMovies)}
+                        >
                             Guardar
                         </Button>
                     </Stack>
