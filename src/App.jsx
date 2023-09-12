@@ -27,6 +27,8 @@ import Personajes from './components/Personajes';
 import Peliculas from './components/Peliculas';
 import FormularioPeliculas from './components/FormularioPeliculas';
 import FormularioPersonajes from './components/FormularioPersonajes';
+import FormularioCrearPersonaje from './components/FormularioCrearPersonaje';
+import FormularioEditarPelicula from './components/FormularioEditarPelicula';
 
 function App() {
   const theme = useTheme();
@@ -103,7 +105,9 @@ function App() {
             <Route path="/personajes" element={<Personajes />} />
             <Route path="/peliculas/series" element={<Peliculas />} />
             <Route path="/formulario/peliculas/series" element={<FormularioPeliculas />} />
-            <Route path="/formulario/personajes" element={<FormularioPersonajes />} />
+            <Route path="/formulario/peliculas/series/:id" element={<FormularioEditarPelicula />} />
+            <Route path="/formulario/personajes" element={<FormularioCrearPersonaje />} />
+            <Route path="/formulario/personajes/:id" element={<FormularioPersonajes />} />
           </Routes>
         </Box>
       </Box>
