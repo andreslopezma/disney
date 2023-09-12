@@ -7,19 +7,19 @@ import { Button, Chip, Divider, FormControl, Grid, InputAdornment, InputLabel, M
 
 // components
 import Title from './Title';
-import { useParams } from 'react-router-dom';
 
 // custom hooks
 import useFetch from '../hooks/useFetch';
-import useUpdate from '../hooks/useUpdate';
+import useCreate from '../hooks/useCreate';
 
-function FormularioPersonajes() {
+
+function FormularioCrearPersonaje() {
     const [formCharacter, setFormCharacter] = useState({
         name: '',
         age: null,
         weight: ''
     });
-    const [flag, setFlag] = useState(false);
+    const [filterParams, setFilterParams] = useState({});
     const titles = [{
         text: 'Home',
         icon: <CameraIndoorIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
@@ -34,19 +34,8 @@ function FormularioPersonajes() {
         path: null
     }];
 
-    const { id } = useParams();
-    const character = useFetch(`character/${id}`);
-    const movies = useFetch(`movies`);
-    const { updateData } = useUpdate('character', '/personajes');
-    // const { sendData } = useCreate('characters');
-
-
-    useEffect(() => {
-        if (character != undefined && character.data.length && flag == false && id) {
-            setFormCharacter(character.data[0]);
-            setFlag(true);
-        }
-    }, [character]);
+    const movies = useFetch(`movies`, filterParams);
+    const { sendData } = useCreate('characters');
 
     const fileInput = useRef(null);
 
@@ -78,7 +67,7 @@ function FormularioPersonajes() {
         setFormCharacter({ ...formCharacter, 'movies': movies });
     }
 
-    const { name, age, weight } = formCharacter;
+    const { name, age, weight, history } = formCharacter;
     return (
         <>
             <Title titles={titles} />
@@ -88,7 +77,6 @@ function FormularioPersonajes() {
             <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
                     <TextField
-                        focused
                         fullWidth
                         label="Nombre"
                         name="name"
@@ -101,7 +89,6 @@ function FormularioPersonajes() {
                 <Grid item xs={12} md={6}>
                     <TextField
                         fullWidth
-                        focused
                         label="Edad"
                         name="age"
                         id="age"
@@ -114,7 +101,6 @@ function FormularioPersonajes() {
                 <Grid item xs={12} md={6}>
                     <TextField
                         fullWidth
-                        focused
                         label="Peso"
                         name="weight"
                         id="weight"
@@ -146,16 +132,11 @@ function FormularioPersonajes() {
                                 movies.data.length
                                     ?
                                     movies.data.map(({ title, id }, index) => {
-                                        let movies = []
-                                        if (character.data[0]) {
-                                            movies = character.data[0].movie;
-                                        }
                                         return (
                                             <>
                                                 <option
                                                     key={index}
                                                     value={id}
-                                                    selected={!!movies.find(element => element.id === id)}
                                                 >
                                                     {title}
                                                 </option>
@@ -168,6 +149,19 @@ function FormularioPersonajes() {
                             }
                         </Select>
                     </FormControl>
+                </Grid>
+                <Grid item xs={12} md={12}>
+                    <TextField
+                        fullWidth
+                        label="Historia"
+                        name="history"
+                        id="history"
+                        type="text"
+                        value={history}
+                        multiline
+                        rows={5}
+                        onChange={handleInputChange}
+                    />
                 </Grid>
                 <Grid item xs={12} md={12}>
                     <input
@@ -185,10 +179,9 @@ function FormularioPersonajes() {
                         <Button
                             variant="outlined"
                             startIcon={<SaveAsIcon />}
-                            onClick={() => updateData(formCharacter)}
+                            onClick={() => sendData(formCharacter)}
                         >
-
-                            Editar
+                            Guardar
                         </Button>
                     </Stack>
                 </Grid>
@@ -197,4 +190,4 @@ function FormularioPersonajes() {
     )
 }
 
-export default FormularioPersonajes
+export default FormularioCrearPersonaje

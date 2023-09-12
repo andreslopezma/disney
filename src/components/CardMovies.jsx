@@ -5,15 +5,15 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import TodayIcon from '@mui/icons-material/Today';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { Grid } from '@mui/material';
 import { Link } from 'react-router-dom';
 import useDelete from '../hooks/useDelete';
+import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
+import StarIcon from '@mui/icons-material/Star';
 
-function CardCustom({ data, id, getData }) {
-    const { name, age, history, weight, image } = data;
-    const { deletes } = useDelete('character');
+function CardMovies({ data, id, getData }) {
+    const { title, gender_id, qualification, image } = data;
+    const { deletes } = useDelete('movie');
     return (
         <Card sx={{ maxWidth: 345 }}>
             <CardMedia
@@ -23,35 +23,32 @@ function CardCustom({ data, id, getData }) {
             />
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                    {name.toUpperCase()}
+                    {title.toUpperCase()}
                 </Typography>
                 <Typography>
                     <Grid container alignItems={"center"} spacing={1}>
                         <Grid item>
-                            <TodayIcon></TodayIcon>
+                            <TheaterComedyIcon></TheaterComedyIcon>
                         </Grid>
                         <Grid item>
-                            Age: {age}
+                            Categoria: {gender_id}
                         </Grid>
                     </Grid>
                 </Typography>
                 <Typography>
                     <Grid container alignItems={"center"} spacing={1}>
                         <Grid item>
-                            <FitnessCenterIcon></FitnessCenterIcon>
+                            <StarIcon></StarIcon>
                         </Grid>
                         <Grid item>
-                            Peso: {weight}
+                            Calificacion: {qualification}
                         </Grid>
                     </Grid>
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    {history}
                 </Typography>
             </CardContent>
             <CardActions>
                 <Link
-                    to={`/formulario/personajes/${id}`}
+                    to={`/formulario/peliculas/series/${id}`}
                 >
                     <Button
                         size="small"
@@ -70,4 +67,4 @@ function CardCustom({ data, id, getData }) {
     );
 }
 
-export default CardCustom;
+export default CardMovies;

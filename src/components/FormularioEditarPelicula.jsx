@@ -1,15 +1,20 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import CameraIndoorIcon from '@mui/icons-material/CameraIndoor';
 import { LocalMoviesOutlined, PersonPin } from '@mui/icons-material';
 import DrawIcon from '@mui/icons-material/Draw';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import { Button, Chip, Divider, Grid, Rating, Stack, TextField, Typography } from '@mui/material';
 import Title from './Title';
-import useCreate from '../hooks/useCreate';
+import useUpdate from '../hooks/useUpdate';
+import { useParams } from 'react-router-dom';
+import useFetch from '../hooks/useFetch';
 
-function FormularioPeliculas() {
+function FormularioEditarPelicula() {
+    const { id } = useParams();
+    const movie = useFetch(`movie/${id}`);
+    const [flag, setFlag] = useState(false);
     const [formMovies, setFormMovies] = useState({});
-    const { sendData } = useCreate('movies');
+    const { updateData } = useUpdate(`movie`, '/peliculas/series');
     const titles = [{
         text: 'Home',
         icon: <CameraIndoorIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
@@ -23,6 +28,14 @@ function FormularioPeliculas() {
         icon: <DrawIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
         path: null
     }];
+
+    useEffect(() => {
+        if (movie != undefined && movie.data.length && flag == false && id) {
+            setFormMovies(movie.data[0]);
+            setFlag(true);
+        }
+    }, [movie])
+
 
     const fileInput = useRef(null);
 
@@ -43,19 +56,24 @@ function FormularioPeliculas() {
             [name]: value
         });
     };
+
+    const { title, qualification, publication_date } = formMovies;
+
     return (
         <>
             <Title titles={titles} />
             <Divider sx={{ mb: 4, mt: 2 }} textAlign="center" >
-                <Chip label="Creando Pelicula o Serie" />
+                <Chip label="Editando Pelicula o Serie" />
             </Divider>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
                     <TextField
                         fullWidth
+                        focused
                         label="Titulo"
-                        name="name"
-                        id="name"
+                        name="title"
+                        id="title"
+                        value={title}
                         placeholder="(ej. Luca, Toy Story)"
                         onChange={handleInputChange}
                     />
@@ -64,10 +82,12 @@ function FormularioPeliculas() {
                     <TextField
                         fullWidth
                         label="Fecha de Publicacion"
-                        name="date_publication"
-                        id="date_publication"
+                        name="publication_date"
+                        id="publication_date"
                         placeholder="(ej. 35)"
                         type="date"
+                        value={publication_date ? publication_date.substring(0, 10) : ''}
+                        focused
                         onChange={handleInputChange}
                     />
                 </Grid>
@@ -76,7 +96,7 @@ function FormularioPeliculas() {
                     <Rating
                         name="qualification"
                         id="qualification"
-                        value={0}
+                        value={qualification ? qualification : 0}
                         onChange={handleInputChange}
                     />
                 </Grid>
@@ -96,9 +116,9 @@ function FormularioPeliculas() {
                         <Button
                             variant="outlined"
                             tartIcon={<SaveAsIcon />}
-                            onClick={() => sendData(formMovies)}
+                            onClick={() => updateData(formMovies)}
                         >
-                            Guardar
+                            Editar
                         </Button>
                     </Stack>
                 </Grid>
@@ -107,4 +127,4 @@ function FormularioPeliculas() {
     )
 }
 
-export default FormularioPeliculas
+export default FormularioEditarPelicula
