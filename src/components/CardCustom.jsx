@@ -5,8 +5,15 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import TodayIcon from '@mui/icons-material/Today';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import { Grid } from '@mui/material';
+import { Link } from 'react-router-dom';
+import useDelete from '../hooks/useDelete';
 
-function CardCustom() {
+function CardCustom({ data, id, getData }) {
+    const { name, age, history, weight, image } = data;
+    const { deletes } = useDelete('character');
     return (
         <Card sx={{ maxWidth: 345 }}>
             <CardMedia
@@ -16,16 +23,48 @@ function CardCustom() {
             />
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                    Lizard
+                    {name.toUpperCase()}
+                </Typography>
+                <Typography>
+                    <Grid container alignItems={"center"} spacing={1}>
+                        <Grid item>
+                            <TodayIcon></TodayIcon>
+                        </Grid>
+                        <Grid item>
+                            Age: {age}
+                        </Grid>
+                    </Grid>
+                </Typography>
+                <Typography>
+                    <Grid container alignItems={"center"} spacing={1}>
+                        <Grid item>
+                            <FitnessCenterIcon></FitnessCenterIcon>
+                        </Grid>
+                        <Grid item>
+                            Peso: {weight}
+                        </Grid>
+                    </Grid>
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    Lizards are a widespread group of squamate reptiles, with over 6,000
-                    species, ranging across all continents except Antarctica
+                    {history}
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small">Editar</Button>
-                <Button size="small">Eliminar</Button>
+                <Link
+                    to={`/formulario/personajes/${id}`}
+                >
+                    <Button
+                        size="small"
+                    >
+                        Editar
+                    </Button>
+                </Link>
+                <Button
+                    size="small"
+                    onClick={() => deletes({ id, getData })}
+                >
+                    Eliminar
+                </Button>
             </CardActions>
         </Card>
     );
