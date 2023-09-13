@@ -13,12 +13,15 @@ const useUpdate = (endpoint, returnPath) => {
     const updateData = async (params) => {
         const { id } = params;
         try {
+            console.log(params);
             const result = await update({ url: `${BASE_URL}${endpoint}/${id}`, params });
             setResponse(result);
             enqueueSnackbar(result.message, { variant: 'success' });
             native(returnPath);
-        } catch (error) {
-            setError(error);
+        } catch ({ response }) {
+            const { data } = response;
+            enqueueSnackbar(data.message, { variant: 'error' });
+            setError(data.error);
         } finally {
             setLoading(false);
         }
