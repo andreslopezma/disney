@@ -13,7 +13,6 @@ const useUpdate = (endpoint, returnPath) => {
     const updateData = async (params) => {
         const { id } = params;
         try {
-            console.log(params);
             const result = await update({ url: `${BASE_URL}${endpoint}/${id}`, params });
             setResponse(result);
             enqueueSnackbar(result.message, { variant: 'success' });
