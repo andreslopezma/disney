@@ -1,6 +1,6 @@
 # React + Vite
 
-IMPORTANTE: Cuando se quiera instalar las dependencias de este proyecto es importante ejecutar el comanod: npm install --force.
+IMPORTANTE: Cuando se quiera instalar las dependencias de este proyecto es importante ejecutar el comanod: npm install.
 Con el fin de evitar cualquier inconveniente. Gracias :)
 
 Segregación de Tareas:
