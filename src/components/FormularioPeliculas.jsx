@@ -1,12 +1,13 @@
-import React, { useRef, useState } from 'react'
+import React from 'react'
 import CameraIndoorIcon from '@mui/icons-material/CameraIndoor';
-import { LocalMoviesOutlined, PersonPin } from '@mui/icons-material';
+import { LocalMoviesOutlined } from '@mui/icons-material';
 import DrawIcon from '@mui/icons-material/Draw';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
-import { Button, Chip, Divider, Grid, Rating, Stack, TextField, Typography } from '@mui/material';
+import { Button, Chip, Divider, FormControl, Grid, InputLabel, MenuItem, Rating, Select, Stack, TextField, Typography } from '@mui/material';
 import Title from './Title';
 import useCreate from '../hooks/useCreate';
 import useForm from '../hooks/useForm';
+import useFetch from '../hooks/useFetch';
 
 function FormularioPeliculas() {
     const titles = [{
@@ -23,7 +24,12 @@ function FormularioPeliculas() {
         path: null
     }];
 
-    const { sendData } = useCreate('movies');
+    // save the data
+    const { sendData } = useCreate('movies', '/peliculas/series');
+
+    // get the all genders
+    const { data } = useFetch('genders');
+
 
     const {
         handleInputChange,
@@ -33,8 +39,9 @@ function FormularioPeliculas() {
         fileInput
     } = useForm({
         title: '',
-        date_publication: '',
-        qualification: ''
+        publication_date: '',
+        qualification: '',
+        gender_id: ''
     });
     return (
         <>
@@ -73,6 +80,38 @@ function FormularioPeliculas() {
                     />
                 </Grid>
                 <Grid item xs={12} md={6}>
+                    <FormControl fullWidth>
+                        <InputLabel id="gender">Categoria</InputLabel>
+                        <Select
+                            labelId="gender"
+                            id="gender_id"
+                            name="gender_id"
+                            label="Categoria"
+                            onChange={handleInputChange}
+                            defaultValue={0}
+                        >
+                            <MenuItem value={0}>Selecione una Categoria</MenuItem>
+                            {
+                                data.length
+                                    ?
+                                    data.map(({ id, name }) => {
+                                        return (
+                                            <MenuItem
+                                                value={id}
+                                                key={id}
+                                            >
+                                                {name}
+                                            </MenuItem>
+                                        )
+                                    })
+                                    :
+                                    <MenuItem value={0}>Sin Categorias</MenuItem>
+                            }
+
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12}>
                     <input
                         ref={fileInput}
                         type="file"

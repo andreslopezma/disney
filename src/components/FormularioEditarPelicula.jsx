@@ -3,18 +3,14 @@ import CameraIndoorIcon from '@mui/icons-material/CameraIndoor';
 import { LocalMoviesOutlined, PersonPin } from '@mui/icons-material';
 import DrawIcon from '@mui/icons-material/Draw';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
-import { Button, Chip, Divider, Grid, Rating, Stack, TextField, Typography } from '@mui/material';
+import { Button, Chip, Divider, FormControl, Grid, InputLabel, MenuItem, Rating, Select, Stack, TextField, Typography } from '@mui/material';
 import Title from './Title';
 import useUpdate from '../hooks/useUpdate';
 import { useParams } from 'react-router-dom';
 import useFetch from '../hooks/useFetch';
+import useForm from '../hooks/useForm';
 
 function FormularioEditarPelicula() {
-    const { id } = useParams();
-    const movie = useFetch(`movie/${id}`);
-    const [flag, setFlag] = useState(false);
-    const [formMovies, setFormMovies] = useState({});
-    const { updateData } = useUpdate(`movie`, '/peliculas/series');
     const titles = [{
         text: 'Home',
         icon: <CameraIndoorIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
@@ -29,36 +25,38 @@ function FormularioEditarPelicula() {
         path: null
     }];
 
+    const { id } = useParams();
+
+    const movie = useFetch(`movie/${id}`);
+    const { updateData } = useUpdate(`movie`, '/peliculas/series');
+
+
     useEffect(() => {
-        if (movie != undefined && movie.data.length && flag == false && id) {
-            setFormMovies(movie.data[0]);
-            setFlag(true);
+        const { data } = movie;
+        data.length && setFormulario(data[0]);
+    }, [movie.data]);
+
+    // get the all genders
+    const { data } = useFetch('genders');
+
+
+    const {
+        handleInputChange,
+        handleFileChange,
+        setFormulario,
+        formulario,
+        fileInput
+    } = useForm({
+        title: '',
+        publication_date: '',
+        qualification: '',
+        gender: {
+            name: '',
+            id: ''
         }
-    }, [movie])
+    });
 
-
-    const fileInput = useRef(null);
-
-    const handleButtonClick = () => {
-        fileInput.current.click();
-    };
-
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        console.log("Archivo seleccionado:", file.name);
-        // Aquí puedes manejar el archivo cargado según lo que necesites hacer
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormMovies({
-            ...formMovies,
-            [name]: value
-        });
-    };
-
-    const { title, qualification, publication_date } = formMovies;
-
+    const { title, qualification, publication_date, gender } = formulario;
     return (
         <>
             <Title titles={titles} />
@@ -101,22 +99,54 @@ function FormularioEditarPelicula() {
                     />
                 </Grid>
                 <Grid item xs={12} md={6}>
+                    <FormControl fullWidth>
+                        <InputLabel id="gender">Categoria</InputLabel>
+                        <Select
+                            labelId="gender"
+                            id="gender_id"
+                            name="gender_id"
+                            label="Categoria"
+                            onChange={handleInputChange}
+                            value={gender.id}
+                        >
+                            <MenuItem value={0}>Selecione una Categoria</MenuItem>
+                            {
+                                data.length
+                                    ?
+                                    data.map(({ id, name }) => {
+                                        return (
+                                            <MenuItem
+                                                value={id}
+                                                key={id}
+                                            >
+                                                {name}
+                                            </MenuItem>
+                                        )
+                                    })
+                                    :
+                                    <MenuItem value={0}>Sin Categorias</MenuItem>
+                            }
+
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12}>
                     <input
                         ref={fileInput}
                         type="file"
                         hidden
                         onChange={handleFileChange}
                     />
-                    <Button fullWidth variant="contained" color="primary" onClick={handleButtonClick}>
+                    {/*<Button fullWidth variant="contained" color="primary" onClick={handleButtonClick}>
                         Cargar Imagen
-                    </Button>
+                        </Button>*/}
                 </Grid>
                 <Grid item container justifyContent="center" alignItems="center">
                     <Stack>
                         <Button
                             variant="outlined"
-                            tartIcon={<SaveAsIcon />}
-                            onClick={() => updateData(formMovies)}
+                            startIcon={<SaveAsIcon />}
+                            onClick={() => updateData(formulario)}
                         >
                             Editar
                         </Button>

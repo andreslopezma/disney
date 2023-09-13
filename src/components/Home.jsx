@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MobileStepper from '@mui/material/MobileStepper';
@@ -7,38 +7,15 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import SwipeableViews from 'react-swipeable-views';
-import { autoPlay } from 'react-swipeable-views-utils';
-
-const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
-
-const images = [
-    {
-        label: 'San Francisco – Oakland Bay Bridge, United States',
-        imgPath:
-            'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-    {
-        label: 'Bird',
-        imgPath:
-            'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-    {
-        label: 'Bali, Indonesia',
-        imgPath:
-            'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250',
-    },
-    {
-        label: 'Goč, Serbia',
-        imgPath:
-            'https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-];
+import useFetch from '../hooks/useFetch';
+import { Backdrop, CircularProgress } from '@mui/material';
 
 function Home() {
     const theme = useTheme();
-    const [activeStep, setActiveStep] = React.useState(0);
-    const maxSteps = images.length;
+    const { data, loading } = useFetch('movies');
+    const [activeStep, setActiveStep] = useState(0);
+    const [open, setOpen] = useState(false);
+    const maxSteps = data.length;
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -46,13 +23,16 @@ function Home() {
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
+    };    
+    
+    useEffect(() => {
+        loading ? setOpen(true) : setOpen(false);
+    },[loading]);
+    
 
-    const handleStepChange = (step) => {
-        setActiveStep(step);
-    };
 
     return (
+
         <Box sx={{ maxWidth: '100%', flexGrow: 1 }}>
             <Paper
                 square
@@ -65,32 +45,25 @@ function Home() {
                     bgcolor: 'background.default',
                 }}
             >
-                <Typography>{images[activeStep].label}</Typography>
+                <Typography>{data[activeStep] && data[activeStep].title}</Typography>
             </Paper>
-            <AutoPlaySwipeableViews
-                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                index={activeStep}
-                onChangeIndex={handleStepChange}
-                enableMouseEvents
+            <Box
+                component="img"
+                sx={{
+                    height: '100%',
+                    display: 'block',
+                    overflow: 'hidden',
+                    width: '100%'
+                }}
+                src={data[activeStep] && data[activeStep].image}
+                alt={data[activeStep] && data[activeStep].title}
+            />
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={open}
             >
-                {images.map((step, index) => (
-                    <div key={step.label}>
-                        {Math.abs(activeStep - index) <= 2 ? (
-                            <Box
-                                component="img"
-                                sx={{
-                                    height: '100%',
-                                    display: 'block',
-                                    overflow: 'hidden',
-                                    width: '100%'
-                                }}
-                                src={step.imgPath}
-                                alt={step.label}
-                            />
-                        ) : null}
-                    </div>
-                ))}
-            </AutoPlaySwipeableViews>
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <MobileStepper
                 steps={maxSteps}
                 position="static"

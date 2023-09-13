@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import CameraIndoorIcon from '@mui/icons-material/CameraIndoor';
 import { PersonPin } from '@mui/icons-material';
 import DrawIcon from '@mui/icons-material/Draw';
@@ -33,7 +33,7 @@ function FormularioPersonajes() {
     const { data } = useFetch(`character/${id}`);
     const movies = useFetch(`movies`);
     const { updateData } = useUpdate('character', '/personajes');
-    // const { sendData } = useCreate('characters');
+
     useEffect(() => {
         data.length && setFormulario(data[0]);
     }, [data]);
@@ -42,7 +42,6 @@ function FormularioPersonajes() {
         handleInputChange,
         handleInputMulti,
         handleFileChange,
-        handleButtonClick,
         setFormulario,
         formulario,
         fileInput
@@ -56,7 +55,6 @@ function FormularioPersonajes() {
 
 
     const { name, age, weight, history, movie } = formulario;
-    console.log(movie)
     return (
         <>
             <Title titles={titles} />

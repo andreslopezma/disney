@@ -19,7 +19,6 @@ const useCreate = (endpoint, reload) => {
             native(reload);
         } catch ({ response }) {
             const { data } = response;
-            console.log(data)
             enqueueSnackbar(data.error, { variant: 'error' });
             setError(data.error);
         } finally {
