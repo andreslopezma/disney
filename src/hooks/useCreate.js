@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { createData } from "../services/dataService";
 import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 
-const useCreate = (endpoint) => {
+const useCreate = (endpoint, reload) => {
+    const native = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
     const BASE_URL = import.meta.env.VITE_API_URL;
     const [response, setResponse] = useState({});
@@ -10,13 +12,16 @@ const useCreate = (endpoint) => {
     const [error, setError] = useState(null);
 
     const sendData = async (params) => {
-        console.log(params);
         try {
             const result = await createData({ url: `${BASE_URL}${endpoint}`, params });
             setResponse(result);
             enqueueSnackbar(result.message, { variant: 'success' });
-        } catch (error) {
-            setError(error);
+            native(reload);
+        } catch ({ response }) {
+            const { data } = response;
+            console.log(data)
+            enqueueSnackbar(data.error, { variant: 'error' });
+            setError(data.error);
         } finally {
             setLoading(false);
         }
