@@ -12,14 +12,14 @@ import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
 import StarIcon from '@mui/icons-material/Star';
 
 function CardMovies({ data, id, getData }) {
-    const { title, gender_id, qualification, image } = data;
+    const { title, qualification, image, gender } = data;
     const { deletes } = useDelete('movie');
     return (
         <Card sx={{ maxWidth: 345 }}>
             <CardMedia
                 sx={{ height: 140 }}
-                image="/static/images/cards/contemplative-reptile.jpg"
-                title="green iguana"
+                image={image}
+                title={title}
             />
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
@@ -30,7 +30,7 @@ function CardMovies({ data, id, getData }) {
                         <TheaterComedyIcon></TheaterComedyIcon>
                     </Grid>
                     <Grid item>
-                        Categoria: {gender_id}
+                        Categoria: {gender.name}
                     </Grid>
                 </Grid>
                 <Grid container alignItems={"center"} spacing={1}>
