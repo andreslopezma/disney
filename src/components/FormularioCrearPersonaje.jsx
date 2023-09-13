@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import CameraIndoorIcon from '@mui/icons-material/CameraIndoor';
 import { PersonPin } from '@mui/icons-material';
 import DrawIcon from '@mui/icons-material/Draw';
@@ -11,15 +11,11 @@ import Title from './Title';
 // custom hooks
 import useFetch from '../hooks/useFetch';
 import useCreate from '../hooks/useCreate';
+import useForm from '../hooks/useForm';
 
 
 function FormularioCrearPersonaje() {
-    const [formCharacter, setFormCharacter] = useState({
-        name: '',
-        age: null,
-        weight: ''
-    });
-    const [filterParams, setFilterParams] = useState({});
+
     const titles = [{
         text: 'Home',
         icon: <CameraIndoorIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
@@ -34,45 +30,29 @@ function FormularioCrearPersonaje() {
         path: null
     }];
 
-    const movies = useFetch(`movies`, filterParams);
-    const { sendData } = useCreate('characters');
+    const movies = useFetch(`movies`);
+    const { sendData } = useCreate('characters', '/personajes');
 
-    const fileInput = useRef(null);
+    const {
+        handleInputChange,
+        handleInputMulti,
+        handleFileChange,
+        handleButtonClick,
+        formulario,
+        fileInput
+    } = useForm({
+        name: '',
+        age: '',
+        weight: '',
+        history: ''
+    });
 
-    const handleButtonClick = () => {
-        fileInput.current.click();
-    };
-
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        console.log("Archivo seleccionado:", file.name);
-        // Aquí puedes manejar el archivo cargado según lo que necesites hacer
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormCharacter({
-            ...formCharacter,
-            [name]: value
-        });
-    };
-
-    const handleInputMulti = ({ target }) => {
-        const { selectedOptions } = target;
-        let movies = [];
-        for (var i = 0; i < selectedOptions.length; i++) {
-            const { value } = selectedOptions.item(i);
-            movies.push(value);
-        }
-        setFormCharacter({ ...formCharacter, 'movies': movies });
-    }
-
-    const { name, age, weight, history } = formCharacter;
+    const { name, age, weight, history } = formulario;
     return (
         <>
             <Title titles={titles} />
             <Divider sx={{ mb: 4, mt: 2 }} textAlign="center" >
-                <Chip label={"Editando Personaje"} />
+                <Chip label={"Creando Personaje"} />
             </Divider>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
@@ -127,25 +107,24 @@ function FormularioCrearPersonaje() {
                                 id: "movie",
                             }}
                             onChange={handleInputMulti}
+                            autoFocus
                         >
                             {
                                 movies.data.length
                                     ?
                                     movies.data.map(({ title, id }, index) => {
                                         return (
-                                            <>
-                                                <option
-                                                    key={index}
-                                                    value={id}
-                                                >
-                                                    {title}
-                                                </option>
-                                            </>
+                                            <option
+                                                key={id}
+                                                value={id}
+                                            >
+                                                {title}
+                                            </option>
                                         )
                                     })
 
                                     :
-                                    <option>Sin Peliculas</option>
+                                    <option key={0}>Sin Peliculas</option>
                             }
                         </Select>
                     </FormControl>
@@ -179,7 +158,7 @@ function FormularioCrearPersonaje() {
                         <Button
                             variant="outlined"
                             startIcon={<SaveAsIcon />}
-                            onClick={() => sendData(formCharacter)}
+                            onClick={() => sendData(formulario)}
                         >
                             Guardar
                         </Button>
