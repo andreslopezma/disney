@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { PersonPin } from '@mui/icons-material';
-import { Box, Button, Fab, FormControlLabel, Grid, Radio, RadioGroup, Stack, TextField, Tooltip } from '@mui/material';
+import { Alert, AlertTitle, Box, Button, Fab, FormControlLabel, Grid, Radio, RadioGroup, Stack, TextField, Tooltip } from '@mui/material';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import CameraIndoorIcon from '@mui/icons-material/CameraIndoor';
 
@@ -11,9 +11,6 @@ import Title from './Title'
 import useFetch from '../hooks/useFetch';
 
 function Personajes() {
-    const [filterParams, setFilterParams] = useState({});
-    const [params, setParams] = useState({});
-
     const titles = [{
         text: 'Home',
         icon: <CameraIndoorIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
@@ -24,16 +21,14 @@ function Personajes() {
         path: null
     }];
 
-
-    const handleFilterClick = () => {
-        setFilterParams(params)
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setParams({ ...params, [name]: value ? value : null });
-    };
-    const { data, loading, error, getData } = useFetch('characters', filterParams);
+    const {
+        data,
+        loading,
+        error,
+        getData,
+        handleFilterClick,
+        handleInputChange
+    } = useFetch('characters');
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -125,7 +120,12 @@ function Personajes() {
                             );
                         })
                         :
-                        <p>sin datos</p>
+                        <>
+                            <Alert severity="info">
+                                <AlertTitle>Info</AlertTitle>
+                                Sin datos
+                            </Alert>
+                        </>
                 }
             </Grid>
         </>

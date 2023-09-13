@@ -3,14 +3,12 @@ import Title from './Title';
 import { LocalMoviesOutlined } from '@mui/icons-material';
 import CameraIndoorIcon from '@mui/icons-material/CameraIndoor';
 import MovieFilterIcon from '@mui/icons-material/MovieFilter';
-import { Box, Button, Fab, FormControlLabel, Grid, Radio, RadioGroup, Stack, TextField, Tooltip } from '@mui/material';
+import { Alert, AlertTitle, Box, Button, Fab, FormControlLabel, Grid, Radio, RadioGroup, Stack, TextField, Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
 import useFetch from '../hooks/useFetch';
 import CardMovies from './CardMovies';
 
 function Peliculas() {
-    const [filterParams, setFilterParams] = useState({});
-    const [params, setParams] = useState({});
     const titles = [{
         text: 'Home',
         icon: <CameraIndoorIcon sx={{ mr: 0.5 }} fontSize="inherit" />
@@ -20,15 +18,14 @@ function Peliculas() {
         path: null
     }];
 
-    const handleFilterClick = () => {
-        setFilterParams(params)
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setParams({ ...params, [name]: value ? value : null });
-    };
-    const { data, loading, error, getData } = useFetch('movies', filterParams);
+    const {
+        data,
+        loading,
+        error,
+        getData,
+        handleFilterClick,
+        handleInputChange
+    } = useFetch('movies');
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -109,7 +106,12 @@ function Peliculas() {
                             );
                         })
                         :
-                        <p>sin datos</p>
+                        <>
+                            <Alert severity="info">
+                                <AlertTitle>Info</AlertTitle>
+                                Sin datos
+                            </Alert>
+                        </>
                 }
             </Grid>
         </>

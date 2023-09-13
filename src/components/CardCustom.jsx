@@ -18,33 +18,29 @@ function CardCustom({ data, id, getData }) {
         <Card sx={{ maxWidth: 345 }}>
             <CardMedia
                 sx={{ height: 140 }}
-                image="/static/images/cards/contemplative-reptile.jpg"
-                title="green iguana"
+                image={image}
+                title={name}
             />
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
                     {name.toUpperCase()}
                 </Typography>
-                <Typography>
-                    <Grid container alignItems={"center"} spacing={1}>
-                        <Grid item>
-                            <TodayIcon></TodayIcon>
-                        </Grid>
-                        <Grid item>
-                            Age: {age}
-                        </Grid>
+                <Grid container alignItems={"center"} spacing={1}>
+                    <Grid item>
+                        <TodayIcon></TodayIcon>
                     </Grid>
-                </Typography>
-                <Typography>
-                    <Grid container alignItems={"center"} spacing={1}>
-                        <Grid item>
-                            <FitnessCenterIcon></FitnessCenterIcon>
-                        </Grid>
-                        <Grid item>
-                            Peso: {weight}
-                        </Grid>
+                    <Grid item>
+                        Age: {age}
                     </Grid>
-                </Typography>
+                </Grid>
+                <Grid container alignItems={"center"} spacing={1}>
+                    <Grid item>
+                        <FitnessCenterIcon></FitnessCenterIcon>
+                    </Grid>
+                    <Grid item>
+                        Peso: {weight}
+                    </Grid>
+                </Grid>
                 <Typography variant="body2" color="text.secondary">
                     {history}
                 </Typography>
