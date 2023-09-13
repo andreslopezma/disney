@@ -12,14 +12,9 @@ import { useParams } from 'react-router-dom';
 // custom hooks
 import useFetch from '../hooks/useFetch';
 import useUpdate from '../hooks/useUpdate';
+import useForm from '../hooks/useForm';
 
 function FormularioPersonajes() {
-    const [formCharacter, setFormCharacter] = useState({
-        name: '',
-        age: null,
-        weight: ''
-    });
-    const [flag, setFlag] = useState(false);
     const titles = [{
         text: 'Home',
         icon: <CameraIndoorIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
@@ -35,50 +30,33 @@ function FormularioPersonajes() {
     }];
 
     const { id } = useParams();
-    const character = useFetch(`character/${id}`);
+    const { data } = useFetch(`character/${id}`);
     const movies = useFetch(`movies`);
     const { updateData } = useUpdate('character', '/personajes');
     // const { sendData } = useCreate('characters');
-
-
     useEffect(() => {
-        if (character != undefined && character.data.length && flag == false && id) {
-            setFormCharacter(character.data[0]);
-            setFlag(true);
-        }
-    }, [character]);
+        data.length && setFormulario(data[0]);
+    }, [data]);
 
-    const fileInput = useRef(null);
+    const {
+        handleInputChange,
+        handleInputMulti,
+        handleFileChange,
+        handleButtonClick,
+        setFormulario,
+        formulario,
+        fileInput
+    } = useForm({
+        name: '',
+        age: '',
+        weight: '',
+        history: '',
+        movie: []
+    });
 
-    const handleButtonClick = () => {
-        fileInput.current.click();
-    };
 
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        console.log("Archivo seleccionado:", file.name);
-        // Aquí puedes manejar el archivo cargado según lo que necesites hacer
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormCharacter({
-            ...formCharacter,
-            [name]: value
-        });
-    };
-
-    const handleInputMulti = ({ target }) => {
-        const { selectedOptions } = target;
-        let movies = [];
-        for (var i = 0; i < selectedOptions.length; i++) {
-            const { value } = selectedOptions.item(i);
-            movies.push(value);
-        }
-        setFormCharacter({ ...formCharacter, 'movies': movies });
-    }
-
-    const { name, age, weight } = formCharacter;
+    const { name, age, weight, history, movie } = formulario;
+    console.log(movie)
     return (
         <>
             <Title titles={titles} />
@@ -141,33 +119,42 @@ function FormularioPersonajes() {
                                 id: "movie",
                             }}
                             onChange={handleInputMulti}
+                            autoFocus
+                            value={movie.length ? movie.map(({ id }) => id) : []}
+                            defaultValue={movie.length ? movie.map(({ id }) => id) : []}
                         >
                             {
                                 movies.data.length
                                     ?
                                     movies.data.map(({ title, id }, index) => {
-                                        let movies = []
-                                        if (character.data[0]) {
-                                            movies = character.data[0].movie;
-                                        }
                                         return (
-                                            <>
-                                                <option
-                                                    key={index}
-                                                    value={id}
-                                                    selected={!!movies.find(element => element.id === id)}
-                                                >
-                                                    {title}
-                                                </option>
-                                            </>
+                                            <option
+                                                key={index}
+                                                value={id}
+                                            >
+                                                {title}
+                                            </option>
                                         )
                                     })
 
                                     :
-                                    <option>Sin Peliculas</option>
+                                    <option key={0}>Sin Peliculas</option>
                             }
                         </Select>
                     </FormControl>
+                </Grid>
+                <Grid item xs={12} md={12}>
+                    <TextField
+                        fullWidth
+                        label="Historia"
+                        name="history"
+                        id="history"
+                        type="text"
+                        value={history}
+                        multiline
+                        rows={5}
+                        onChange={handleInputChange}
+                    />
                 </Grid>
                 <Grid item xs={12} md={12}>
                     <input
@@ -176,16 +163,18 @@ function FormularioPersonajes() {
                         hidden
                         onChange={handleFileChange}
                     />
-                    <Button fullWidth variant="contained" color="primary" onClick={handleButtonClick}>
+                    {/*
+    <Button fullWidth variant="contained" color="primary" onClick={handleButtonClick}>
                         Cargar Imagen
                     </Button>
+                        */}
                 </Grid>
                 <Grid item container justifyContent="center" alignItems="center">
                     <Stack>
                         <Button
                             variant="outlined"
                             startIcon={<SaveAsIcon />}
-                            onClick={() => updateData(formCharacter)}
+                            onClick={() => updateData(formulario)}
                         >
 
                             Editar

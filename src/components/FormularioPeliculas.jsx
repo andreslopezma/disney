@@ -6,10 +6,9 @@ import SaveAsIcon from '@mui/icons-material/SaveAs';
 import { Button, Chip, Divider, Grid, Rating, Stack, TextField, Typography } from '@mui/material';
 import Title from './Title';
 import useCreate from '../hooks/useCreate';
+import useForm from '../hooks/useForm';
 
 function FormularioPeliculas() {
-    const [formMovies, setFormMovies] = useState({});
-    const { sendData } = useCreate('movies');
     const titles = [{
         text: 'Home',
         icon: <CameraIndoorIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
@@ -24,25 +23,19 @@ function FormularioPeliculas() {
         path: null
     }];
 
-    const fileInput = useRef(null);
+    const { sendData } = useCreate('movies');
 
-    const handleButtonClick = () => {
-        fileInput.current.click();
-    };
-
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        console.log("Archivo seleccionado:", file.name);
-        // Aquí puedes manejar el archivo cargado según lo que necesites hacer
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormMovies({
-            ...formMovies,
-            [name]: value
-        });
-    };
+    const {
+        handleInputChange,
+        handleFileChange,
+        handleButtonClick,
+        formulario,
+        fileInput
+    } = useForm({
+        title: '',
+        date_publication: '',
+        qualification: ''
+    });
     return (
         <>
             <Title titles={titles} />
@@ -54,8 +47,8 @@ function FormularioPeliculas() {
                     <TextField
                         fullWidth
                         label="Titulo"
-                        name="name"
-                        id="name"
+                        name="title"
+                        id="title"
                         placeholder="(ej. Luca, Toy Story)"
                         onChange={handleInputChange}
                     />
@@ -64,8 +57,8 @@ function FormularioPeliculas() {
                     <TextField
                         fullWidth
                         label="Fecha de Publicacion"
-                        name="date_publication"
-                        id="date_publication"
+                        name="publication_date"
+                        id="publication_date"
                         placeholder="(ej. 35)"
                         type="date"
                         onChange={handleInputChange}
@@ -76,7 +69,6 @@ function FormularioPeliculas() {
                     <Rating
                         name="qualification"
                         id="qualification"
-                        value={0}
                         onChange={handleInputChange}
                     />
                 </Grid>
@@ -95,8 +87,8 @@ function FormularioPeliculas() {
                     <Stack>
                         <Button
                             variant="outlined"
-                            tartIcon={<SaveAsIcon />}
-                            onClick={() => sendData(formMovies)}
+                            startIcon={<SaveAsIcon />}
+                            onClick={() => sendData(formulario)}
                         >
                             Guardar
                         </Button>
