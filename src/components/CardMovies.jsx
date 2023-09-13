@@ -25,26 +25,22 @@ function CardMovies({ data, id, getData }) {
                 <Typography gutterBottom variant="h5" component="div">
                     {title.toUpperCase()}
                 </Typography>
-                <Typography>
-                    <Grid container alignItems={"center"} spacing={1}>
-                        <Grid item>
-                            <TheaterComedyIcon></TheaterComedyIcon>
-                        </Grid>
-                        <Grid item>
-                            Categoria: {gender_id}
-                        </Grid>
+                <Grid container alignItems={"center"} spacing={1}>
+                    <Grid item>
+                        <TheaterComedyIcon></TheaterComedyIcon>
                     </Grid>
-                </Typography>
-                <Typography>
-                    <Grid container alignItems={"center"} spacing={1}>
-                        <Grid item>
-                            <StarIcon></StarIcon>
-                        </Grid>
-                        <Grid item>
-                            Calificacion: {qualification}
-                        </Grid>
+                    <Grid item>
+                        Categoria: {gender_id}
                     </Grid>
-                </Typography>
+                </Grid>
+                <Grid container alignItems={"center"} spacing={1}>
+                    <Grid item>
+                        <StarIcon></StarIcon>
+                    </Grid>
+                    <Grid item>
+                        Calificacion: {qualification}
+                    </Grid>
+                </Grid>
             </CardContent>
             <CardActions>
                 <Link
